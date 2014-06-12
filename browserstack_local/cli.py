@@ -54,13 +54,11 @@ def get_binary_path(url):
 class TooManyDownloadAttemptsFailed(Exception): pass
 
 def _download_file(url, filename):
-	print "trying to download", url, filename
 	fd = file(filename, "w")
 	fd.write(urllib2.urlopen(url).read())
 	fd.close()
 	if not check_file(url, filename):
 		raise Exception("Check filed")
-	print "downloaded %s -> %s" % (url, filename)
 
 def download_file(url, filename):
 	# tries to download/store the file 5 times
@@ -70,7 +68,6 @@ def download_file(url, filename):
 			_download_file(url, filename)
 		except Exception, e:
 			print "download failed", e, "retrying"
-			pass
 		else:
 			return
 	raise TooManyDownloadAttemptsFailed(e)
