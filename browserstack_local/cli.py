@@ -3,7 +3,10 @@ import sys
 import stat
 import zipfile
 import os.path
-import urllib2
+try:
+    from urllib.request import urlopen, Request
+except ImportError:
+    import urllib2
 import hashlib
 import platform
 import tempfile
@@ -66,8 +69,8 @@ def download_file(url, filename):
 	for i in range(5):
 		try:
 			_download_file(url, filename)
-		except Exception, e:
-			print "download failed", e, "retrying"
+		except Exception as e:
+			print("download failed", e, "retrying")
 		else:
 			return
 	raise TooManyDownloadAttemptsFailed(e)
@@ -95,13 +98,13 @@ def ensure_binary():
 	return filename
 
 def unzip_binary(binary):
-	zfile = zipfile.ZipFile(binary)
-	name = zfile.namelist()[0]
-	(dirname, _) = os.path.split(binary)
-  	zfile.extract(name, dirname)
-  	filename = os.path.join(dirname, name)
-	os.chmod(filename, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
-  	return filename
+    zfile = zipfile.ZipFile(binary)
+    name = zfile.namelist()[0]
+    (dirname, _) = os.path.split(binary)
+    zfile.extract(name, dirname)
+    filename = os.path.join(dirname, name)
+    os.chmod(filename, stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
+    return filename
 
 def launch_binary(binary):
 	params = [binary]
