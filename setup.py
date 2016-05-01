@@ -8,7 +8,7 @@ setup(
     author_email='amitu@rrowserstack.com',
     url='http://github.com/amitu/browserstack-local',
     packages=['browserstack_local'],
-        entry_points = {
+        entry_points={
         'console_scripts': ['browserstack-local=browserstack_local:main'],
     },
     classifiers=[
