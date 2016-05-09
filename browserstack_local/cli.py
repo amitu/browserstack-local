@@ -36,9 +36,9 @@ def get_platform():
         elif arch == "32bit":
             return "lin32"
         else:
-            raise Exception("Unsupported archicteure for linux: %s" % arch)
+            raise Exception("Unsupported architecture for linux: %s" % arch)
     else:
-        raise Exception("Unsopported operating system: %s" % os_name)
+        raise Exception("Unsupported operating system: %s" % os_name)
 
 
 def get_binary_url():
