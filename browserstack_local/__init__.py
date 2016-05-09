@@ -1,1 +1,1 @@
-from browserstack_local.cli import main
+from browserstack_local.cli import main  # noqa
