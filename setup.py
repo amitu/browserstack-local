@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='browserstack-local',
-    version='0.2',
+    version='0.4',
     description='Browserstack Local',
     author='Amit Upadhyay',
     author_email='amitu@rrowserstack.com',
