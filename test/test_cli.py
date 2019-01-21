@@ -1,4 +1,7 @@
-import mock
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 import stat
 import sys
 
@@ -11,7 +14,7 @@ def test_get_platform__unsupported_os(system):
     system.return_value = 'unsupported'
     with pytest.raises(Exception) as e:
         cli.get_platform()
-    assert 'Unsupported operating system: unsupported' in e.value
+    assert 'Unsupported operating system: unsupported' in str(e)
 
 
 def test_get_platform__unsupported_linux_architecture(mocker, system):
@@ -19,7 +22,7 @@ def test_get_platform__unsupported_linux_architecture(mocker, system):
     mocker.patch('platform.architecture', return_value=['unsupported'])
     with pytest.raises(Exception) as e:
         cli.get_platform()
-    assert 'Unsupported architecture for linux: unsupported' in e.value
+    assert 'Unsupported architecture for linux: unsupported' in str(e)
 
 
 @pytest.mark.parametrize('arch, expected', [
@@ -48,14 +51,15 @@ def test_get_binary_url(mocker):
     assert cli.get_binary_url() == binary_url
 
 
-def test_get_binary_path__no_tmp_dir(mocker, cli_file):
-    cli_file.side_effect = Exception('error')
+def test_get_binary_path__no_tmp_dir(mocker, isdir):
+    isdir.return_value = False
     mocker.patch('tempfile.gettempdir', return_value='/tmpdir')
     path = cli.get_binary_path('https://foo.bar/filename')
     assert path == '/tmpdir/filename'
 
 
-def test_get_binary_path(mocker, cli_file):
+def test_get_binary_path(mocker, isdir):
+    isdir.return_value = True
     mocker.patch('tempfile.gettempdir', return_value='tempdir')
     path = cli.get_binary_path('https://foo.bar/filename')
     assert path == '/tmp/filename'
@@ -83,7 +87,7 @@ def test_download_file__invalid_file_raises_exception(retrieve, check_file):
     check_file.return_value = False
     with pytest.raises(Exception) as e:
         cli._download_file('https://foo.bar/filename', 'testfile')
-    assert 'Check failed' in e.value
+    assert 'Check failed' in str(e)
 
 
 def test_download_file__retries_on_exception(mocker):
@@ -115,7 +119,7 @@ def test_check_file__makes_head_request(cli_request, request_info):
 def test_check_file__missing_etag(cli_request, request_info):
     with pytest.raises(Exception) as e:
         cli.check_file('https://foo.bar/filename', 'testfile')
-    assert 'Etag not found on download url' in e.value
+    assert 'Etag not found on download url' in str(e)
 
 
 def test_check_file__reads_file(mocker, cli_request, request_info):
@@ -209,6 +213,7 @@ def test_ensure_binary__returns_downloaded_filename(
 
 def test_unzip_binary__creates_zipfile(mocker):
     zipfile = mocker.patch('zipfile.ZipFile')
+    zipfile.return_value.namelist.return_value = ['zipfile']
     mocker.patch('os.chmod')
     cli.unzip_binary('/path/to/binary')
     zipfile.assert_called_once_with('/path/to/binary')
