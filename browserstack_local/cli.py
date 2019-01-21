@@ -101,7 +101,9 @@ def check_file(url, filename):
     if not etag:
         raise Exception("Etag not found on download url")
     etag = etag[1:-1]
-    md5hash = hashlib.md5(open(filename, 'rb').read()).hexdigest()
+    with open(filename, 'rb') as f:
+        content = f.read()
+    md5hash = hashlib.md5(content).hexdigest()
     return etag == md5hash
 
 
@@ -139,5 +141,5 @@ def main():
     launch_binary(binary)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()
