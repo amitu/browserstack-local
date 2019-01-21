@@ -1,7 +1,6 @@
 import hashlib
 
 import os
-import os.path
 import platform
 import stat
 import subprocess
@@ -9,7 +8,7 @@ import sys
 import tempfile
 try:
     from urllib.request import urlopen, Request, urlretrieve
-except ImportError:
+except ImportError:  # pragma: no cover
     from urllib2 import urlopen, Request
     from urllib import urlretrieve
 import zipfile
@@ -50,11 +49,7 @@ def get_binary_url():
 def get_binary_path(url):
     filename = url.split("/")[-1]
 
-    try:
-        file("/tmp/.foo")
-    except Exception:
-        pass
-    else:
+    if os.path.isdir("/tmp"):
         return "/tmp/%s" % filename
 
     tmpdir = tempfile.gettempdir()

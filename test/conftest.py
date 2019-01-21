@@ -9,8 +9,8 @@ def system(mocker):
 
 
 @pytest.fixture
-def cli_file(mocker):
-    return mocker.patch.object(cli, 'file')
+def isdir(mocker):
+    return mocker.patch('os.path.isdir')
 
 
 @pytest.fixture

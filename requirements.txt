@@ -1,4 +1,4 @@
 flake8==3.6.0
 pytest==4.1.1
-pytest-mock==0.11.0
 pytest-cov==2.6.1
+pytest-mock==0.11.0
